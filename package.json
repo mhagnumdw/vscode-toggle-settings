@@ -3,21 +3,50 @@
   "displayName": "dw-toggle-settings",
   "description": "Permite alterar entre configurações do vscode pela barra de status",
   "version": "0.0.1",
+  "publisher": "dw",
   "engines": {
     "vscode": "^1.99.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "dw-toggle-settings.helloWorld",
-        "title": "Hello World"
+    "configuration": {
+      "type": "object",
+      "title": "Toggle Settings",
+      "properties": {
+        "toggleSettings.items": {
+          "type": "array",
+          "description": "Lista de propriedades do VSCode a serem alternadas com seus ícones e valores",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "property": {
+                "type": "string",
+                "description": "Nome completo da configuração (ex: editor.codeLens)"
+              },
+              "icon": {
+                "type": "string",
+                "description": "Nome do ícone Codicon (ex: eye, settings, debug)"
+              },
+              "values": {
+                "type": "array",
+                "description": "Lista de valores possíveis para essa configuração",
+                "items": {},
+                "uniqueItems": true,
+                "minItems": 2
+              }
+            },
+            "required": ["property", "icon", "values"]
+          }
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
