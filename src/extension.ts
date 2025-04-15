@@ -16,16 +16,16 @@ interface Disposable {
 /**
  * According to the `contributes.configuration.properties["toggleSettings.` in package.json
  */
-const GROUP_NAME = 'toggleSettings';
+const GROUP_NAME = 'toggleSettings'; // TODO: rename this property in package.json?
 
 const statusBarItems: Map<string, Disposable> = new Map();
 
 export function activate(context: vscode.ExtensionContext) {
   const settings = getExtensionSettings();
 
-  // TODO: se existirem `property` com mesmo nome:
-  // - Adicionar um warn com vscode.window.showWarningMessage
-  // - Apenas a última deve ser considerada
+  // TODO: if there are `property` with the same name:
+  // - Add a warning using vscode.window.showWarningMessage
+  // - Only the last one should be considered
 
   createAllStatusBarItems(settings, context);
 
@@ -103,5 +103,5 @@ function getExtensionSettings(): ToggleSetting[] {
 }
 
 export function deactivate() {
-  console.log('Desativando extensão...');
+  console.log('Deactivating extension...');
 }

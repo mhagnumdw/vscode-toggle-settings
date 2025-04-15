@@ -1,11 +1,11 @@
-# dw-toggle-settings README
+# vscode-toggle-settings README
 
 // TODO:
 
 - [ ] review extension name and publisher and change code if needed
 - [ ] update README with details about the extension
 
-This is the README for your extension "dw-toggle-settings". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "vscode-toggle-settings". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

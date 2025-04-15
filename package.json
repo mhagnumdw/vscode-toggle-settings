@@ -1,9 +1,9 @@
 {
-  "name": "dw-toggle-settings",
-  "displayName": "dw-toggle-settings",
-  "description": "Permite alterar entre configurações do vscode pela barra de status",
+  "name": "vscode-toggle-settings",
+  "displayName": "vscode-toggle-settings",
+  "description": "Allows switching between VSCode settings via the status bar",
   "version": "0.0.1",
-  "publisher": "dw",
+  "publisher": "mhagnumdw",
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -21,22 +21,22 @@
       "properties": {
         "toggleSettings.items": {
           "type": "array",
-          "description": "Lista de propriedades do VSCode a serem alternadas com seus ícones e valores",
+          "description": "List of VSCode settings to be toggled with their icons and values",
           "default": [],
           "items": {
             "type": "object",
             "properties": {
               "property": {
                 "type": "string",
-                "description": "Nome completo da configuração (ex: editor.codeLens)"
+                "description": "Full name of the setting (e.g., editor.codeLens)"
               },
               "icon": {
                 "type": "string",
-                "description": "Nome do ícone Codicon (ex: eye, settings, debug)"
+                "description": "Codicon icon name (e.g., eye, settings, debug)"
               },
               "values": {
                 "type": "array",
-                "description": "Lista de valores possíveis para essa configuração",
+                "description": "List of possible values for this setting",
                 "items": {},
                 "uniqueItems": true,
                 "minItems": 2
