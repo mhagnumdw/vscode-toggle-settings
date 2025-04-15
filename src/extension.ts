@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 // TODO: add tsdoc in all elements
 
-interface ToggleSetting {
+export interface ToggleSetting {
   property: string;
   icon: string;
   values: any[];
