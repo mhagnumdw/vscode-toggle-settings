@@ -1,5 +1,3 @@
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { GROUP_NAME, ToggleSetting } from '../extension';
@@ -22,7 +20,11 @@ const waitForConfigChange = (expectedKey: string): Promise<void> => {
 
 suite('Extension Test Suite', () => {
 
+  let extension: ExtensionManager;
+
   suiteSetup(async () => {
+    extension = new ExtensionManager();
+
     vscode.window.showInformationMessage('Start all tests.');
 
     // TODO: in some cases throw an error: `Method not found: toJSON: CodeExpectedError: Method not found: toJSON`
@@ -32,7 +34,7 @@ suite('Extension Test Suite', () => {
 
   test('Extension activation', () => {
     const extension = vscode.extensions.getExtension('mhagnumdw.vscode-toggle-settings');
-    assert.ok(extension, 'Extension should be definedX');
+    assert.ok(extension, 'Extension should be defined');
     assert.strictEqual(extension?.isActive, true, 'Extension should be active');
   });
 
@@ -42,31 +44,40 @@ suite('Extension Test Suite', () => {
     assert.strictEqual(items.length, 0, 'Settings should be empty');
   });
 
-  test('Add settings to status bar', async () => {
-    const settings: ToggleSetting[] = [
-      {
-        property: 'editor.renderWhitespace',
-        icon: 'whitespace',
-        values: ["none", "all"]
-      }
-    ];
+  test('Add settings to status bar and rotate them', async () => {
+    await extension.addSetting('editor.renderWhitespace', 'whitespace', ["none", "all"]);
 
-    // Simula o usuário adicionando a configuração
-    // TODO: dá o erro mas funciona: `Method not found: toJSON: CodeExpectedError: Method not found: toJSON`
-    await vscode.workspace.getConfiguration(GROUP_NAME)
-      .update('items', settings, vscode.ConfigurationTarget.Global);
+    await extension.click('editor.renderWhitespace');
+    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
 
-    // Simula o usuário clicando no botão da barra de status
-    await vscode.commands.executeCommand(GROUP_NAME + '.editor.renderWhitespace');
-    await waitForConfigChange('editor.renderWhitespace');
+    await extension.click('editor.renderWhitespace');
+    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'all');
 
-    // Crie a assertiva para verificar se o valor foi alterado
-    const newValue = vscode.workspace.getConfiguration().get('editor.renderWhitespace');
-    assert.strictEqual(newValue, 'none');
+    await extension.click('editor.renderWhitespace');
+    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
   });
 
 });
 
-class MyVscode {
+class ExtensionManager {
 
+  /** Simulate the user adding a configuration */
+  async addSetting(property: string, icon: string, values: any[]) {
+    const config = vscode.workspace.getConfiguration(GROUP_NAME);
+    const items: ToggleSetting[] = config.get('items') || [];
+    items.push({ property, icon, values });
+    await vscode.workspace.getConfiguration(GROUP_NAME)
+      .update('items', items, vscode.ConfigurationTarget.Global);
+  }
+
+  /** Simulate the user clicking the status bar button */
+  async click(property: string) {
+    await vscode.commands.executeCommand(GROUP_NAME + '.' + property);
+    await waitForConfigChange(property);
+  }
+
+  /** Get the value of a property from the configuration */
+  getValue(property: string) {
+    return vscode.workspace.getConfiguration().get(property);
+  }
 }
