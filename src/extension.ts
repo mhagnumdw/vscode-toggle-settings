@@ -16,7 +16,7 @@ interface Disposable {
 /**
  * According to the `contributes.configuration.properties["toggleSettings.` in package.json
  */
-const GROUP_NAME = 'toggleSettings'; // TODO: rename this property in package.json?
+export const GROUP_NAME = 'toggleSettings'; // TODO: rename this property in package.json?
 
 const statusBarItems: Map<string, Disposable> = new Map();
 

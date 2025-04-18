@@ -2,24 +2,48 @@
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import * as myExtension from '../extension';
+import { GROUP_NAME, ToggleSetting } from '../extension';
 
-function delay(ms: number): Promise<void> {
+const delay = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
+
+// Function to wait for a configuration change
+const waitForConfigChange = (expectedKey: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const disposable = vscode.workspace.onDidChangeConfiguration(e => {
+      if (e.affectsConfiguration(expectedKey)) {
+        disposable.dispose();
+        resolve();
+      }
+    });
+  });
+};
 
 suite('Extension Test Suite', () => {
-  vscode.window.showInformationMessage('Start all tests.');
 
-  // test('Sample test', () => {
-  //   assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-  //   assert.strictEqual(-1, [1, 2, 3].indexOf(0));
-  // });
+  suiteSetup(async () => {
+    vscode.window.showInformationMessage('Start all tests.');
 
-  test('Wait a while', async (done) => {
-    const GROUP_NAME = 'toggleSettings';
+    // TODO: in some cases throw an error: `Method not found: toJSON: CodeExpectedError: Method not found: toJSON`
+    // Open global settings
+    // await vscode.commands.executeCommand('workbench.action.openSettingsJson');
+  });
 
-    const settings: myExtension.ToggleSetting[] = [
+  test('Extension activation', () => {
+    const extension = vscode.extensions.getExtension('mhagnumdw.vscode-toggle-settings');
+    assert.ok(extension, 'Extension should be definedX');
+    assert.strictEqual(extension?.isActive, true, 'Extension should be active');
+  });
+
+  test('Settings are empty', () => {
+    const config = vscode.workspace.getConfiguration('toggleSettings');
+    const items = config.get('items') as ToggleSetting[];
+    assert.strictEqual(items.length, 0, 'Settings should be empty');
+  });
+
+  test('Add settings to status bar', async () => {
+    const settings: ToggleSetting[] = [
       {
         property: 'editor.renderWhitespace',
         icon: 'whitespace',
@@ -27,71 +51,22 @@ suite('Extension Test Suite', () => {
       }
     ];
 
-    await vscode.commands.executeCommand('workbench.action.openSettingsJson');
+    // Simula o usuário adicionando a configuração
+    // TODO: dá o erro mas funciona: `Method not found: toJSON: CodeExpectedError: Method not found: toJSON`
+    await vscode.workspace.getConfiguration(GROUP_NAME)
+      .update('items', settings, vscode.ConfigurationTarget.Global);
 
-    const config = vscode.workspace.getConfiguration('toggleSettings');
-
-    await config.update('items', settings, vscode.ConfigurationTarget.Global);
-
-    await delay(2000);
-
+    // Simula o usuário clicando no botão da barra de status
     await vscode.commands.executeCommand(GROUP_NAME + '.editor.renderWhitespace');
+    await waitForConfigChange('editor.renderWhitespace');
 
-    await delay(2000);
+    // Crie a assertiva para verificar se o valor foi alterado
+    const newValue = vscode.workspace.getConfiguration().get('editor.renderWhitespace');
+    assert.strictEqual(newValue, 'none');
+  });
 
-    await vscode.commands.executeCommand(GROUP_NAME + '.editor.renderWhitespace');
-
-    setTimeout(() => { done(); }, 5000);
-  }).timeout(45000);
-
-  // test('Extension activation', async (done) => {
-  //   const extension = vscode.extensions.getExtension('mhagnumdw.vscode-toggle-settings');
-  //   assert.ok(extension, 'Extension should be defined');
-  //   await extension?.activate();
-  //   assert.strictEqual(extension?.isActive, true, 'Extension should be active');
-  //   setTimeout(() => { done(); }, 40000);
-  // }).timeout(60000);
-
-  // test('Status bar items creation', (done) => {
-  //   const settings: myExtension.ToggleSetting[] = [
-  //     { property: 'test.property1', icon: 'check', values: [true, false] },
-  //     { property: 'test.property2', icon: 'gear', values: ['value1', 'value2'] },
-  //   ];
-
-  //   const context = { subscriptions: [] } as unknown as vscode.ExtensionContext;
-  //   myExtension.activate(context);
-
-  //   settings.forEach(setting => {
-  //     const commandId = `toggleSettings.${setting.property}`;
-  //     const statusBarItem = vscode.commands.getCommands(true).then(commands => commands.includes(commandId));
-  //     assert.ok(statusBarItem, `Status bar item for ${setting.property} should exist`);
-  //   });
-
-  //   setTimeout(() => { done(); }, 30000);
-  // }).timeout(40000);
-
-  // test('Cycle setting updates configuration', async () => {
-  //   const setting: myExtension.ToggleSetting = {
-  //     property: 'test.property',
-  //     icon: 'check',
-  //     values: [true, false],
-  //   };
-
-  //   const context = { subscriptions: [] } as unknown as vscode.ExtensionContext;
-  //   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-
-  //   await vscode.workspace.getConfiguration().update(setting.property, false, vscode.ConfigurationTarget.Global);
-  //   myExtension['cycleSetting'](setting, statusBarItem);
-
-  //   const updatedValue = vscode.workspace.getConfiguration().get(setting.property);
-  //   assert.strictEqual(updatedValue, true, 'Setting should be updated to the next value');
-  // });
-
-  // test('Remove all status bar items', () => {
-  //   const context = { subscriptions: [] } as unknown as vscode.ExtensionContext;
-  //   myExtension.activate(context);
-
-  //   myExtension['removeAllStatusBarItems']();
-  //   assert.strictEqual(myExtension['statusBarItems'].size, 0, 'All status bar items should be removed');
-  // });
 });
+
+class MyVscode {
+
+}
