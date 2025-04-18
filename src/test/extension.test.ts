@@ -32,20 +32,24 @@ suite('Extension Test Suite', () => {
     // await vscode.commands.executeCommand('workbench.action.openSettingsJson');
   });
 
+  setup(async () => {
+    await extension.clearAllSettings();
+  });
+
   test('Extension activation', () => {
     const extension = vscode.extensions.getExtension('mhagnumdw.vscode-toggle-settings');
     assert.ok(extension, 'Extension should be defined');
     assert.strictEqual(extension?.isActive, true, 'Extension should be active');
   });
 
-  test('Settings are empty', () => {
+  test('Settings should be empty at start', () => {
     const config = vscode.workspace.getConfiguration('toggleSettings');
     const items = config.get('items') as ToggleSetting[];
     assert.strictEqual(items.length, 0, 'Settings should be empty');
   });
 
   test('Add settings to status bar and rotate them', async () => {
-    await extension.addSetting('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addItem('editor.renderWhitespace', 'whitespace', ["none", "all"]);
 
     await extension.click('editor.renderWhitespace');
     assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
@@ -57,27 +61,65 @@ suite('Extension Test Suite', () => {
     assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
   });
 
+  test('Add two settings, verify, remove one, and verify again', async () => {
+    // Add two items
+    await extension.addItem('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addItem('editor.cursorStyle', 'cursor', ["line", "block"]);
+
+    // Verify both items are present
+    let items = extension.getAllItems();
+    assert.strictEqual(items.length, 2, 'There should be two settings');
+    assert.strictEqual(items[0].property, 'editor.renderWhitespace', 'First setting should match');
+    assert.strictEqual(items[1].property, 'editor.cursorStyle', 'Second setting should match');
+
+    // Remove the first setting
+    items.shift();
+    await extension.setItems(items);
+
+    // Verify only the second setting remains
+    items = extension.getAllItems();
+    assert.strictEqual(items.length, 1, 'There should be one setting left');
+    assert.strictEqual(items[0].property, 'editor.cursorStyle', 'Remaining setting should match');
+  });
+
 });
 
 class ExtensionManager {
 
   /** Simulate the user adding a configuration */
-  async addSetting(property: string, icon: string, values: any[]) {
-    const config = vscode.workspace.getConfiguration(GROUP_NAME);
-    const items: ToggleSetting[] = config.get('items') || [];
+  async addItem(property: string, icon: string, values: any[]) {
+    const items: ToggleSetting[] = this.config.get('items') || [];
     items.push({ property, icon, values });
-    await vscode.workspace.getConfiguration(GROUP_NAME)
-      .update('items', items, vscode.ConfigurationTarget.Global);
+    await this.config.update('items', items, vscode.ConfigurationTarget.Global);
   }
 
-  /** Simulate the user clicking the status bar button */
+  /** Simulate the user updating a configuration */
+  async setItems(items: ToggleSetting[]) {
+    await this.config.update('items', items, vscode.ConfigurationTarget.Global);
+  }
+
+  /** Simulate the user clicking the status bar item */
   async click(property: string) {
     await vscode.commands.executeCommand(GROUP_NAME + '.' + property);
     await waitForConfigChange(property);
   }
 
   /** Get the value of a property from the configuration */
-  getValue(property: string) {
+  getValue(property: string): unknown {
     return vscode.workspace.getConfiguration().get(property);
+  }
+
+  /** Get the all status bar items */
+  getAllItems(): ToggleSetting[] {
+    return this.config.get('items') as ToggleSetting[];
+  }
+
+  /** Clear all extension settings */
+  async clearAllSettings() {
+    await this.config.update('items', undefined, vscode.ConfigurationTarget.Global);
+  }
+
+  private get config() {
+    return vscode.workspace.getConfiguration(GROUP_NAME);
   }
 }
