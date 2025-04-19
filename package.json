@@ -19,6 +19,11 @@
       "type": "object",
       "title": "Toggle Settings",
       "properties": {
+        "vscode-toggle-settings.disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Disable the extension"
+        },
         "vscode-toggle-settings.items": {
           "type": "array",
           "description": "List of VSCode settings to be toggled with their icons and values",

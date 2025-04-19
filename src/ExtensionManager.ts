@@ -1,0 +1,176 @@
+import * as vscode from 'vscode';
+
+/**
+ * According to the `contributes.configuration.properties["vscode-toggle-settings.` in package.json
+ */
+// TODO: rename to EXTENSION_NAME ?
+export const GROUP_NAME = 'vscode-toggle-settings';
+
+const DISABLED_PROPERTY = `${GROUP_NAME}.disabled`;
+const ITEMS_PROPERTY = `${GROUP_NAME}.items`;
+
+/**
+ * Represents a toggle setting in the extension.
+ */
+export interface ToggleSetting {
+  property: string;
+  icon: string;
+  values: any[];
+}
+
+/**
+ * Represents a disposable object we need to manage.
+ */
+type DisposableLike = vscode.Disposable | vscode.StatusBarItem;
+
+export class ExtensionManager {
+
+  private static instance: ExtensionManager;
+
+  private context: vscode.ExtensionContext;
+  private disabled: boolean;
+  private statusBarItems: Map<string, DisposableLike[]> = new Map();
+  private itemsChangeSubscription: vscode.Disposable = { dispose: () => {} }; // default empty disposable
+
+  private constructor(context: vscode.ExtensionContext) {
+    this.context = context;
+    this.disabled = this.getDisabledFromConfig();
+
+    if (!this.disabled) {
+      this.activate();
+    }
+
+    // monitor the disabled property
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration(DISABLED_PROPERTY)) {
+        const newValue = this.getDisabledFromConfig();
+        if (this.disabled !== newValue) {
+          this.toggleExtension(newValue);
+        }
+      };
+    }));
+  }
+
+  static initialize(context: vscode.ExtensionContext): ExtensionManager {
+    if (!ExtensionManager.instance) {
+      ExtensionManager.instance = new ExtensionManager(context);
+    }
+    return ExtensionManager.instance;
+  }
+
+  // static getInstance() {
+  //   if (!this.instance) {
+  //     this.instance = new ExtensionManager();
+  //   }
+  //   return this.instance;
+  // }
+
+  private toggleExtension(disabled: boolean) {
+    this.disabled = disabled;
+    if (disabled) {
+      this.deactivate();
+      vscode.window.showInformationMessage(`Extension ${GROUP_NAME} is disabled.`);
+    } else {
+      this.activate();
+      vscode.window.showInformationMessage(`Extension ${GROUP_NAME} is enabled.`);
+    }
+  }
+
+  private activate() {
+    this.createAllStatusBarItems();
+
+    this.itemsChangeSubscription = vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration(ITEMS_PROPERTY)) {
+        this.createAllStatusBarItems();
+      }
+    });
+    this.context.subscriptions.push(this.itemsChangeSubscription);
+  }
+
+  private deactivate() {
+    this.itemsChangeSubscription.dispose();
+    this.removeAllStatusBarItems();
+  }
+
+  private getDisabledFromConfig(): boolean {
+    return vscode.workspace.getConfiguration().get(DISABLED_PROPERTY, false);
+  }
+
+  /////////////////////////////
+  // Que vieram de extension.ts
+  /////////////////////////////
+
+  private createAllStatusBarItems() {
+    this.removeAllStatusBarItems();
+    this.getAllToggles().forEach(toggleSetting => {
+      const item = this.createStatusBarItem(toggleSetting);
+      this.updateStatusBarItem(toggleSetting, item);
+    });
+  }
+
+  private removeAllStatusBarItems() {
+    for (const key of Array.from(this.statusBarItems.keys())) {
+      this.removeStatusBarItem(key);
+    }
+  }
+
+  private removeStatusBarItem(commandId: string) {
+    const disposables = this.statusBarItems.get(commandId);
+    if (disposables) {
+      // item.statusBarItem.dispose();
+      // item.command.dispose();
+      disposables.forEach(d => d.dispose());
+      this.statusBarItems.delete(commandId);
+    }
+  }
+
+  private getAllToggles(): ToggleSetting[] {
+    return vscode.workspace.getConfiguration().get(ITEMS_PROPERTY) || [];
+  }
+
+  private createStatusBarItem(setting: ToggleSetting): vscode.StatusBarItem {
+    const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    statusBarItem.command = this.getCommandId(setting);
+
+    const command = vscode.commands
+      .registerCommand(statusBarItem.command, () => this.cycleSetting(setting, statusBarItem));
+    this.context.subscriptions.push(command);
+
+    this.statusBarItems.set(statusBarItem.command, [ statusBarItem, command ]);
+    return statusBarItem;
+  }
+
+  /**
+   * Build the command ID for the toggle setting.
+   */
+  private getCommandId(setting: ToggleSetting): string {
+    return `${GROUP_NAME}.${setting.property}`;
+  }
+
+  /**
+   * Cycle through the values of the toggle setting and update the status bar item.
+   */
+  private cycleSetting(setting: ToggleSetting, item: vscode.StatusBarItem) {
+    const config = vscode.workspace.getConfiguration();
+    const currentValue = config.get(setting.property);
+    const currentIndex = setting.values.indexOf(currentValue);
+    const newValue = setting.values[(currentIndex + 1) % setting.values.length];
+
+    config.update(setting.property, newValue, vscode.ConfigurationTarget.Global).then(() => {
+      this.updateStatusBarItem(setting, item);
+    }, (err) => {
+      const msg = `Failed to update setting ${setting.property}: ${err}`;
+      console.error(msg, err);
+      vscode.window.showErrorMessage(msg);
+    });
+  }
+
+  private updateStatusBarItem(setting: ToggleSetting, item: vscode.StatusBarItem) {
+    const config = vscode.workspace.getConfiguration();
+    const value = config.get(setting.property);
+    item.text = `$(${setting.icon})`;
+    item.tooltip = `${setting.property}: ${value}`;
+    item.show();
+  }
+
+}

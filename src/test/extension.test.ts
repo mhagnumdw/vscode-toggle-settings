@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { GROUP_NAME, ToggleSetting } from '../extension';
+import { GROUP_NAME, ToggleSetting } from '../ExtensionManager';
 
 suite('Extension Test Suite', () => {
 
