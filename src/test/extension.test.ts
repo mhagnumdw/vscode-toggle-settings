@@ -2,34 +2,13 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { GROUP_NAME, ToggleSetting } from '../extension';
 
-const delay = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
-
-// Function to wait for a configuration change
-const waitForConfigChange = (expectedKey: string): Promise<void> => {
-  return new Promise((resolve) => {
-    const disposable = vscode.workspace.onDidChangeConfiguration(e => {
-      if (e.affectsConfiguration(expectedKey)) {
-        disposable.dispose();
-        resolve();
-      }
-    });
-  });
-};
-
 suite('Extension Test Suite', () => {
 
   let extension: ExtensionManager;
 
   suiteSetup(async () => {
     extension = new ExtensionManager();
-
     vscode.window.showInformationMessage('Start all tests.');
-
-    // TODO: in some cases throw an error: `Method not found: toJSON: CodeExpectedError: Method not found: toJSON`
-    // Open global settings
-    // await vscode.commands.executeCommand('workbench.action.openSettingsJson');
   });
 
   setup(async () => {
@@ -125,3 +104,19 @@ class ExtensionManager {
     return vscode.workspace.getConfiguration(GROUP_NAME);
   }
 }
+
+// Function to wait for a configuration change
+const waitForConfigChange = (expectedKey: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const disposable = vscode.workspace.onDidChangeConfiguration(e => {
+      if (e.affectsConfiguration(expectedKey)) {
+        disposable.dispose();
+        resolve();
+      }
+    });
+  });
+};
+
+const delay = (ms: number): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
