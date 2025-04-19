@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
-import { GROUP_NAME, ToggleSetting } from '../ExtensionManager';
+import { EXTENSION_NAME, ExtensionManager, ToggleSetting } from '../ExtensionManager';
 
 suite('Extension Test Suite', () => {
 
-  let extension: ExtensionManager;
+  let extension: TestExtensionManager;
 
   suiteSetup(async () => {
-    extension = new ExtensionManager();
+    extension = new TestExtensionManager();
     vscode.window.showInformationMessage('Start all tests.');
   });
 
@@ -65,7 +65,7 @@ suite('Extension Test Suite', () => {
 /**
  * Class to manage the extension settings and simulate user actions.
  */
-class ExtensionManager {
+class TestExtensionManager {
 
   /** Simulate the user adding a configuration */
   async addToggle(property: string, icon: string, values: any[]) {
@@ -81,7 +81,8 @@ class ExtensionManager {
 
   /** Simulate the user clicking the status bar item */
   async click(property: string) {
-    await vscode.commands.executeCommand(GROUP_NAME + '.' + property);
+    const commandId = ExtensionManager.getCommandId(property);
+    await vscode.commands.executeCommand(EXTENSION_NAME + '.' + property);
     await waitForConfigChange(property);
   }
 
@@ -101,7 +102,7 @@ class ExtensionManager {
   }
 
   private get config() {
-    return vscode.workspace.getConfiguration(GROUP_NAME);
+    return vscode.workspace.getConfiguration(EXTENSION_NAME);
   }
 }
 

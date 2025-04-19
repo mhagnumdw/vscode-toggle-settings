@@ -4,10 +4,10 @@ import * as vscode from 'vscode';
  * According to the `contributes.configuration.properties["vscode-toggle-settings.` in package.json
  */
 // TODO: rename to EXTENSION_NAME ?
-export const GROUP_NAME = 'vscode-toggle-settings';
+export const EXTENSION_NAME = 'vscode-toggle-settings';
 
-const DISABLED_PROPERTY = `${GROUP_NAME}.disabled`;
-const ITEMS_PROPERTY = `${GROUP_NAME}.items`;
+const DISABLED_PROPERTY = `${EXTENSION_NAME}.disabled`;
+const ITEMS_PROPERTY = `${EXTENSION_NAME}.items`;
 
 /**
  * Represents a toggle setting in the extension.
@@ -69,10 +69,10 @@ export class ExtensionManager {
     this.disabled = disabled;
     if (disabled) {
       this.deactivate();
-      vscode.window.showInformationMessage(`Extension ${GROUP_NAME} is disabled.`);
+      vscode.window.showInformationMessage(`Extension ${EXTENSION_NAME} is disabled.`);
     } else {
       this.activate();
-      vscode.window.showInformationMessage(`Extension ${GROUP_NAME} is enabled.`);
+      vscode.window.showInformationMessage(`Extension ${EXTENSION_NAME} is enabled.`);
     }
   }
 
@@ -97,7 +97,6 @@ export class ExtensionManager {
   }
 
   /////////////////////////////
-  // Que vieram de extension.ts
   /////////////////////////////
 
   private createAllStatusBarItems() {
@@ -130,7 +129,7 @@ export class ExtensionManager {
 
   private createStatusBarItem(setting: ToggleSetting): vscode.StatusBarItem {
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBarItem.command = this.getCommandId(setting);
+    statusBarItem.command = ExtensionManager.getCommandId(setting.property);
 
     const command = vscode.commands
       .registerCommand(statusBarItem.command, () => this.cycleSetting(setting, statusBarItem));
@@ -143,8 +142,8 @@ export class ExtensionManager {
   /**
    * Build the command ID for the toggle setting.
    */
-  private getCommandId(setting: ToggleSetting): string {
-    return `${GROUP_NAME}.${setting.property}`;
+  public static getCommandId(toggleProperty: string): string {
+    return `${EXTENSION_NAME}.${toggleProperty}`;
   }
 
   /**
