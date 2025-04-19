@@ -22,17 +22,17 @@ export const GROUP_NAME = 'vscode-toggle-settings';
 const statusBarItems: Map<string, Disposable> = new Map();
 
 export function activate(context: vscode.ExtensionContext) {
-  const settings = getExtensionSettings();
+  const settings = getAllToggles();
 
   // TODO: if there are `property` with the same name:
   // - Add a warning using vscode.window.showWarningMessage
-  // - Only the last one should be considered
+  // - Only the first one should be considered
 
   createAllStatusBarItems(settings, context);
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration(GROUP_NAME)) {
-      const newSettings = getExtensionSettings();
+      const newSettings = getAllToggles();
       createAllStatusBarItems(newSettings, context);
     }
   }));
@@ -72,10 +72,16 @@ function removeAllStatusBarItems() {
   }
 }
 
+/**
+ * Build the command ID for the toggle setting.
+ */
 function getCommandId(setting: ToggleSetting): string {
   return `${GROUP_NAME}.${setting.property}`;
 }
 
+/**
+ * Cycle through the values of the toggle setting and update the status bar item.
+ */
 function cycleSetting(setting: ToggleSetting, item: vscode.StatusBarItem) {
   const config = vscode.workspace.getConfiguration();
   const currentValue = config.get(setting.property);
@@ -99,7 +105,7 @@ function updateStatusBarItem(setting: ToggleSetting, item: vscode.StatusBarItem)
   item.show();
 }
 
-function getExtensionSettings(): ToggleSetting[] {
+function getAllToggles(): ToggleSetting[] {
   return vscode.workspace.getConfiguration(GROUP_NAME).get('items') || [];
 }
 

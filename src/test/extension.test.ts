@@ -33,7 +33,7 @@ suite('Extension Test Suite', () => {
   });
 
   setup(async () => {
-    await extension.clearAllSettings();
+    await extension.clearAllToggles();
   });
 
   test('Extension activation', () => {
@@ -43,12 +43,12 @@ suite('Extension Test Suite', () => {
   });
 
   test('Settings should be empty at start', () => {
-    const items = extension.getAllItems();
+    const items = extension.getAllToggles();
     assert.strictEqual(items.length, 0, 'Settings should be empty');
   });
 
   test('Add settings to status bar and rotate them', async () => {
-    await extension.addItem('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
 
     await extension.click('editor.renderWhitespace');
     assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
@@ -62,38 +62,41 @@ suite('Extension Test Suite', () => {
 
   test('Add two settings, verify, remove one, and verify again', async () => {
     // Add two items
-    await extension.addItem('editor.renderWhitespace', 'whitespace', ["none", "all"]);
-    await extension.addItem('editor.cursorStyle', 'cursor', ["line", "block"]);
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
 
     // Verify both items are present
-    let items = extension.getAllItems();
+    let items = extension.getAllToggles();
     assert.strictEqual(items.length, 2, 'There should be two settings');
     assert.strictEqual(items[0].property, 'editor.renderWhitespace', 'First setting should match');
     assert.strictEqual(items[1].property, 'editor.cursorStyle', 'Second setting should match');
 
     // Remove the first setting
     items.shift();
-    await extension.setItems(items);
+    await extension.setToggles(items);
 
     // Verify only the second setting remains
-    items = extension.getAllItems();
+    items = extension.getAllToggles();
     assert.strictEqual(items.length, 1, 'There should be one setting left');
     assert.strictEqual(items[0].property, 'editor.cursorStyle', 'Remaining setting should match');
   });
 
 });
 
+/**
+ * Class to manage the extension settings and simulate user actions.
+ */
 class ExtensionManager {
 
   /** Simulate the user adding a configuration */
-  async addItem(property: string, icon: string, values: any[]) {
+  async addToggle(property: string, icon: string, values: any[]) {
     const items: ToggleSetting[] = this.config.get('items') || [];
     items.push({ property, icon, values });
     await this.config.update('items', items, vscode.ConfigurationTarget.Global);
   }
 
   /** Simulate the user updating a configuration */
-  async setItems(items: ToggleSetting[]) {
+  async setToggles(items: ToggleSetting[]) {
     await this.config.update('items', items, vscode.ConfigurationTarget.Global);
   }
 
@@ -109,12 +112,12 @@ class ExtensionManager {
   }
 
   /** Get the all status bar items */
-  getAllItems(): ToggleSetting[] {
+  getAllToggles(): ToggleSetting[] {
     return this.config.get('items') as ToggleSetting[];
   }
 
   /** Clear all extension settings */
-  async clearAllSettings() {
+  async clearAllToggles() {
     await this.config.update('items', undefined, vscode.ConfigurationTarget.Global);
   }
 
