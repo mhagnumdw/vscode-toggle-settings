@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 // TODO: add tsdoc in all elements
 
-interface ToggleSetting {
+export interface ToggleSetting {
   property: string;
   icon: string;
   values: any[];
@@ -16,7 +16,7 @@ interface Disposable {
 /**
  * According to the `contributes.configuration.properties["toggleSettings.` in package.json
  */
-const GROUP_NAME = 'toggleSettings'; // TODO: rename this property in package.json?
+export const GROUP_NAME = 'toggleSettings'; // TODO: rename this property in package.json?
 
 const statusBarItems: Map<string, Disposable> = new Map();
 
