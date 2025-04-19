@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 /**
  * According to the `contributes.configuration.properties["vscode-toggle-settings.` in package.json
  */
-// TODO: rename to EXTENSION_NAME ?
 export const EXTENSION_NAME = 'vscode-toggle-settings';
 
 const DISABLED_PROPERTY = `${EXTENSION_NAME}.disabled`;

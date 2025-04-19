@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { EXTENSION_NAME, ExtensionManager, ToggleSetting } from '../ExtensionManager';
 
+// TODO: add more tests to cover disabled property
+
 suite('Extension Test Suite', () => {
 
   let extension: TestExtensionManager;
