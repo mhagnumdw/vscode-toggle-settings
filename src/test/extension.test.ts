@@ -43,8 +43,7 @@ suite('Extension Test Suite', () => {
   });
 
   test('Settings should be empty at start', () => {
-    const config = vscode.workspace.getConfiguration('toggleSettings');
-    const items = config.get('items') as ToggleSetting[];
+    const items = extension.getAllItems();
     assert.strictEqual(items.length, 0, 'Settings should be empty');
   });
 
