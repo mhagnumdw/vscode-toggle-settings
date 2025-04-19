@@ -19,7 +19,7 @@
       "type": "object",
       "title": "Toggle Settings",
       "properties": {
-        "toggleSettings.items": {
+        "vscode-toggle-settings.items": {
           "type": "array",
           "description": "List of VSCode settings to be toggled with their icons and values",
           "default": [],
