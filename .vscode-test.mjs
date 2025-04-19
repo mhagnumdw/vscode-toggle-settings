@@ -17,7 +17,7 @@ export default defineConfig({
     '--user-data-dir=' + tempUserDataDir,
   ],
   mocha: {
-    timeout: 10000, // default is 2000
+    timeout: 10000, // default is 2000 ms
   }
   // coverage: {} // https://github.com/microsoft/vscode-test-cli/issues/40#issuecomment-2815825666
 });

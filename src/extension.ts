@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 
-// TODO: add tsdoc in all elements
-
+/**
+ * Represents a toggle setting in the extension.
+ */
 export interface ToggleSetting {
   property: string;
   icon: string;
