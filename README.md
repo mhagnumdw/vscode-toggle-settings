@@ -26,7 +26,6 @@ For example, let's say we want to toggle these settings:
 Open global settings (`Ctrl Shift P > Open user settings json`) and add at the end:
 
 ```json
-  ...
   "vscode-toggle-settings.items": [
     {
       "property": "editor.codeLens",
@@ -39,7 +38,6 @@ Open global settings (`Ctrl Shift P > Open user settings json`) and add at the e
       "values": ["none", "all"]
     }
   ]
-  ...
 }
 ```
 
