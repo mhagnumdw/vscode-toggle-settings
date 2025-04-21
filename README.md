@@ -26,19 +26,18 @@ For example, let's say we want to toggle these settings:
 Open global settings (`Ctrl Shift P > Open user settings json`) and add at the end:
 
 ```json
-  "vscode-toggle-settings.items": [
-    {
-      "property": "editor.codeLens",
-      "icon": "eye",
-      "values": [true, false]
-    },
-    {
-      "property": "editor.renderWhitespace",
-      "icon": "whitespace",
-      "values": ["none", "all"]
-    }
-  ]
-}
+"vscode-toggle-settings.items": [
+  {
+    "property": "editor.codeLens",
+    "icon": "eye",
+    "values": [true, false]
+  },
+  {
+    "property": "editor.renderWhitespace",
+    "icon": "whitespace",
+    "values": ["none", "all"]
+  }
+]
 ```
 
 > Icons can be found at [Codicon](https://code.visualstudio.com/api/references/icons-in-labels#icon-listing)
