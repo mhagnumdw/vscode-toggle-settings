@@ -4,6 +4,7 @@
   "description": "Allows switching between VSCode settings via the status bar",
   "version": "0.0.1",
   "publisher": "mhagnumdw",
+  "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.99.0"
   },
