@@ -10,7 +10,7 @@ Perfect for settings you frequently toggle.
 
 // TODO: add gif below
 
-![demo](resource/demo.gif)
+![demo](resources/demo.gif)
 
 ## Installation
 
