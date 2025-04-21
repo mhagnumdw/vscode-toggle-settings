@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as assert from 'assert';
 import { EXTENSION_NAME, ExtensionManager, ToggleSetting } from '../ExtensionManager';
-
-// TODO: add more tests to cover disabled property
+import * as sinon from 'sinon';
 
 suite('Extension Test Suite', () => {
 
@@ -14,7 +13,12 @@ suite('Extension Test Suite', () => {
   });
 
   setup(async () => {
-    await extension.clearAllToggles();
+    await extension.clearAllTogglesFromConf();
+  });
+
+  teardown(() => {
+    // https://sinonjs.org/releases/latest/sandbox/#default-sandbox
+    sinon.restore(); // cleanup, restore any mock, spy etc
   });
 
   test('Extension activation', () => {
@@ -23,43 +27,75 @@ suite('Extension Test Suite', () => {
     assert.strictEqual(extension?.isActive, true, 'Extension should be active');
   });
 
-  test('Settings should be empty at start', () => {
-    const items = extension.getAllToggles();
+  test('Toggles should be empty at start', () => {
+    const items = extension.getAllTogglesFromConf();
     assert.strictEqual(items.length, 0, 'Settings should be empty');
   });
 
-  test('Add settings to status bar and rotate them', async () => {
+  test('Add toggle to status bar and rotate them', async () => {
     await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
 
     await extension.click('editor.renderWhitespace');
-    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
+    assert.strictEqual(extension.getValueFromConf('editor.renderWhitespace'), 'none');
 
     await extension.click('editor.renderWhitespace');
-    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'all');
+    assert.strictEqual(extension.getValueFromConf('editor.renderWhitespace'), 'all');
 
     await extension.click('editor.renderWhitespace');
-    assert.strictEqual(extension.getValue('editor.renderWhitespace'), 'none');
+    assert.strictEqual(extension.getValueFromConf('editor.renderWhitespace'), 'none');
   });
 
-  test('Add two settings, verify, remove one, and verify again', async () => {
-    // Add two items
+  test('Add two toggles and remove one', async () => {
     await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
     await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
 
-    // Verify both items are present
-    let items = extension.getAllToggles();
+    let items = extension.getAllTogglesFromConf();
     assert.strictEqual(items.length, 2, 'There should be two settings');
     assert.strictEqual(items[0].property, 'editor.renderWhitespace', 'First setting should match');
     assert.strictEqual(items[1].property, 'editor.cursorStyle', 'Second setting should match');
 
-    // Remove the first setting
-    items.shift();
+    items.shift(); // Remove the first toggle
     await extension.setToggles(items);
 
-    // Verify only the second setting remains
-    items = extension.getAllToggles();
+    items = extension.getAllTogglesFromConf();
     assert.strictEqual(items.length, 1, 'There should be one setting left');
     assert.strictEqual(items[0].property, 'editor.cursorStyle', 'Remaining setting should match');
+  });
+
+  test('Disable extension', async () => {
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2, 'There should be two status bar items');
+
+    await extension.disableExtension();
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 0, 'Settings should be empty after disabling');
+  });
+
+  test('Enable extension', async () => {
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
+    await extension.disableExtension();
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 0, 'Settings should be empty after disabling');
+
+    await extension.enableExtension();
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2, 'There should be two status bar items after enabling');
+  });
+
+  test('cycleSetting error', async () => {
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+
+    const getConfigurationFake = { // is not possible to stub vscode.WorkspaceConfiguration.update
+      get: sinon.stub().returns('none'), // Simulate next value
+      update: sinon.stub().rejects(new Error('Simulated error')) // Stub to update
+    };
+    sinon.stub(vscode.workspace, 'getConfiguration').returns(getConfigurationFake as any);
+    const showErrorMessageSpy = sinon.spy(vscode.window, 'showErrorMessage');
+    sinon.stub(extension, 'waitForConfigChange').callsFake(() => Promise.resolve());
+
+    await extension.click('editor.renderWhitespace');
+
+    const msg = 'Failed to update setting editor.renderWhitespace: Error: Simulated error';
+    assert.ok(showErrorMessageSpy.calledWith(msg));
   });
 
 });
@@ -69,57 +105,67 @@ suite('Extension Test Suite', () => {
  */
 class TestExtensionManager {
 
-  /** Simulate the user adding a configuration */
+  /** Simulate the user adding a toggle */
   async addToggle(property: string, icon: string, values: any[]) {
     const items: ToggleSetting[] = this.config.get('items') || [];
     items.push({ property, icon, values });
     await this.config.update('items', items, vscode.ConfigurationTarget.Global);
   }
 
-  /** Simulate the user updating a configuration */
+  /** Simulate the user updating all toggles */
   async setToggles(items: ToggleSetting[]) {
     await this.config.update('items', items, vscode.ConfigurationTarget.Global);
+  }
+
+  /** Simulate the user disabling the extension */
+  async disableExtension() {
+    await this.config.update('disabled', true, vscode.ConfigurationTarget.Global);
+  }
+
+  /** Simulate the user enabling the extension */
+  async enableExtension() {
+    await this.config.update('disabled', false, vscode.ConfigurationTarget.Global);
   }
 
   /** Simulate the user clicking the status bar item */
   async click(property: string) {
     const commandId = ExtensionManager.getCommandId(property);
-    await vscode.commands.executeCommand(EXTENSION_NAME + '.' + property);
-    await waitForConfigChange(property);
+    await vscode.commands.executeCommand(commandId);
+    await this.waitForConfigChange(property);
   }
 
   /** Get the value of a property from the configuration */
-  getValue(property: string): unknown {
+  getValueFromConf(property: string): unknown {
     return vscode.workspace.getConfiguration().get(property);
   }
 
   /** Get the all status bar items */
-  getAllToggles(): ToggleSetting[] {
+  getAllTogglesFromConf(): ToggleSetting[] {
     return this.config.get('items') as ToggleSetting[];
   }
 
   /** Clear all extension settings */
-  async clearAllToggles() {
+  async clearAllTogglesFromConf() {
+    // TODO: how to clear `EXTENSION_NAME` property all at once instead of one by one?
     await this.config.update('items', undefined, vscode.ConfigurationTarget.Global);
+    await this.config.update('disabled', undefined, vscode.ConfigurationTarget.Global);
   }
 
-  private get config() {
+  /** Get the configuration for the extension */
+  get config() {
     return vscode.workspace.getConfiguration(EXTENSION_NAME);
   }
-}
 
-// Function to wait for a configuration change
-const waitForConfigChange = (expectedKey: string): Promise<void> => {
-  return new Promise((resolve) => {
-    const disposable = vscode.workspace.onDidChangeConfiguration(e => {
-      if (e.affectsConfiguration(expectedKey)) {
-        disposable.dispose();
-        resolve();
-      }
+  // Function to wait for a configuration change
+  waitForConfigChange(expectedKey: string): Promise<void> {
+    return new Promise((resolve) => {
+      const disposable = vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration(expectedKey)) {
+          disposable.dispose();
+          resolve();
+        }
+      });
     });
-  });
-};
+  };
 
-const delay = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
+}

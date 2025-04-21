@@ -12,9 +12,12 @@ const ITEMS_PROPERTY = `${EXTENSION_NAME}.items`;
  * Represents a toggle setting in the extension.
  */
 export interface ToggleSetting {
+  /** The vscode property to toggle */
   property: string;
-  icon: string;
+  /** The values to cycle through */
   values: any[];
+  /** The icon to display in the status bar */
+  icon: string;
 }
 
 /**
@@ -27,9 +30,9 @@ export class ExtensionManager {
   private static instance: ExtensionManager;
 
   private context: vscode.ExtensionContext;
-  private disabled: boolean;
+  private disabled: boolean; // TODO: rename to enabled
   private statusBarItems: Map<string, DisposableLike[]> = new Map();
-  private itemsChangeSubscription: vscode.Disposable = { dispose: () => {} }; // default empty disposable
+  private itemsChangeSubscription?: vscode.Disposable;
 
   private constructor(context: vscode.ExtensionContext) {
     this.context = context;
@@ -57,14 +60,11 @@ export class ExtensionManager {
     return ExtensionManager.instance;
   }
 
-  // static getInstance() {
-  //   if (!this.instance) {
-  //     this.instance = new ExtensionManager();
-  //   }
-  //   return this.instance;
-  // }
+  static getInstance(): ExtensionManager {
+    return ExtensionManager.instance;
+  }
 
-  private toggleExtension(disabled: boolean) {
+  public toggleExtension(disabled: boolean) {
     this.disabled = disabled;
     if (disabled) {
       this.deactivate();
@@ -87,16 +87,13 @@ export class ExtensionManager {
   }
 
   private deactivate() {
-    this.itemsChangeSubscription.dispose();
+    this.itemsChangeSubscription?.dispose();
     this.removeAllStatusBarItems();
   }
 
   private getDisabledFromConfig(): boolean {
     return vscode.workspace.getConfiguration().get(DISABLED_PROPERTY, false);
   }
-
-  /////////////////////////////
-  /////////////////////////////
 
   private createAllStatusBarItems() {
     this.removeAllStatusBarItems();
@@ -115,8 +112,6 @@ export class ExtensionManager {
   private removeStatusBarItem(commandId: string) {
     const disposables = this.statusBarItems.get(commandId);
     if (disposables) {
-      // item.statusBarItem.dispose();
-      // item.command.dispose();
       disposables.forEach(d => d.dispose());
       this.statusBarItems.delete(commandId);
     }
@@ -169,6 +164,10 @@ export class ExtensionManager {
     item.text = `$(${setting.icon})`;
     item.tooltip = `${setting.property}: ${value}`;
     item.show();
+  }
+
+  get totalStatusBarItems(): number {
+    return this.statusBarItems.size;
   }
 
 }
