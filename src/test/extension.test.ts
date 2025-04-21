@@ -124,12 +124,12 @@ class TestExtensionManager {
 
   /** Simulate the user disabling the extension */
   async disableExtension() {
-    await this.config.update('disabled', true, vscode.ConfigurationTarget.Global);
+    await this.config.update('enabled', false, vscode.ConfigurationTarget.Global);
   }
 
   /** Simulate the user enabling the extension */
   async enableExtension() {
-    await this.config.update('disabled', false, vscode.ConfigurationTarget.Global);
+    await this.config.update('enabled', true, vscode.ConfigurationTarget.Global);
   }
 
   /** Simulate the user clicking the status bar item */
@@ -153,7 +153,7 @@ class TestExtensionManager {
   async clearAllTogglesFromConf() {
     // TODO: how to clear `EXTENSION_NAME` property all at once instead of one by one?
     await this.config.update('items', undefined, vscode.ConfigurationTarget.Global);
-    await this.config.update('disabled', undefined, vscode.ConfigurationTarget.Global);
+    await this.config.update('enabled', undefined, vscode.ConfigurationTarget.Global);
   }
 
   /** Get the configuration for the extension */

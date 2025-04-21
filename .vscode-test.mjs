@@ -7,7 +7,7 @@ const tempUserDataDir = join(
   `vscode-test-${Math.random().toString(36).slice(2)}`
 );
 
-// vscode-extension-test-runner não funciona com console.log
+// vscode-extension-test-runner does not work with console.log
 console.log(`Using temporary user data directory for vscode: ${tempUserDataDir}`);
 
 export default defineConfig({

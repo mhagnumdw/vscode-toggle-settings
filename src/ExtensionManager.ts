@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
  */
 export const EXTENSION_NAME = 'vscode-toggle-settings';
 
-const DISABLED_PROPERTY = `${EXTENSION_NAME}.disabled`;
+const ENABLED_PROPERTY = `${EXTENSION_NAME}.enabled`;
 const ITEMS_PROPERTY = `${EXTENSION_NAME}.items`;
 
 /**
@@ -30,23 +30,23 @@ export class ExtensionManager {
   private static instance: ExtensionManager;
 
   private context: vscode.ExtensionContext;
-  private disabled: boolean; // TODO: rename to enabled
+  private enabled: boolean;
   private statusBarItems: Map<string, DisposableLike[]> = new Map();
   private itemsChangeSubscription?: vscode.Disposable;
 
   private constructor(context: vscode.ExtensionContext) {
     this.context = context;
-    this.disabled = this.getDisabledFromConfig();
+    this.enabled = this.getEnabledFromConfig();
 
-    if (!this.disabled) {
+    if (this.enabled) {
       this.activate();
     }
 
-    // monitor the disabled property
+    // monitor the enabled property
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
-      if (event.affectsConfiguration(DISABLED_PROPERTY)) {
-        const newValue = this.getDisabledFromConfig();
-        if (this.disabled !== newValue) {
+      if (event.affectsConfiguration(ENABLED_PROPERTY)) {
+        const newValue = this.getEnabledFromConfig();
+        if (this.enabled !== newValue) {
           this.toggleExtension(newValue);
         }
       };
@@ -64,14 +64,14 @@ export class ExtensionManager {
     return ExtensionManager.instance;
   }
 
-  public toggleExtension(disabled: boolean) {
-    this.disabled = disabled;
-    if (disabled) {
-      this.deactivate();
-      vscode.window.showInformationMessage(`Extension ${EXTENSION_NAME} is disabled.`);
-    } else {
+  public toggleExtension(enabled: boolean) {
+    this.enabled = enabled;
+    if (enabled) {
       this.activate();
       vscode.window.showInformationMessage(`Extension ${EXTENSION_NAME} is enabled.`);
+    } else {
+      this.deactivate();
+      vscode.window.showInformationMessage(`Extension ${EXTENSION_NAME} is disabled.`);
     }
   }
 
@@ -91,8 +91,8 @@ export class ExtensionManager {
     this.removeAllStatusBarItems();
   }
 
-  private getDisabledFromConfig(): boolean {
-    return vscode.workspace.getConfiguration().get(DISABLED_PROPERTY, false);
+  private getEnabledFromConfig(): boolean {
+    return vscode.workspace.getConfiguration().get(ENABLED_PROPERTY, true);
   }
 
   private createAllStatusBarItems() {
