@@ -44,6 +44,8 @@ Open global settings (`Ctrl Shift P > Open user settings json`) and add at the e
 
 After saving the settings, the icons will appear in the status bar. Each click will toggle the setting between the declared values.
 
+![toolbar](resources/toolbar.png)
+
 🎉 You can now do this for any VS Code setting! 🥳
 
 ## Extension Settings
