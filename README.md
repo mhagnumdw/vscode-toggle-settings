@@ -2,6 +2,14 @@
 
 This is the README for your extension "vscode-toggle-settings". After writing up a brief description, we recommend including the following sections.
 
+// TODO:
+- [ ] update README
+- [ ] set minimal version to engines.vscode and test it
+- [ ] add "license" in package.json
+- [ ] add badge: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
+- [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
+- [ ] 
+
 ## Features
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
