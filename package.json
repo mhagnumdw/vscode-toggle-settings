@@ -1,6 +1,6 @@
 {
   "name": "vscode-toggle-settings",
-  "displayName": "vscode-toggle-settings",
+  "displayName": "Toggle Settings",
   "description": "Allows switching between VSCode settings via the status bar",
   "version": "0.0.1",
   "publisher": "mhagnumdw",

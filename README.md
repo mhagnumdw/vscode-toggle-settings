@@ -3,12 +3,12 @@
 This is the README for your extension "vscode-toggle-settings". After writing up a brief description, we recommend including the following sections.
 
 // TODO:
-- [ ] update README
+- [ ] update README (WIP)
 - [ ] set minimal version to engines.vscode and test it
 - [ ] add "license" in package.json
-- [ ] add badge: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
+- [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
-- [ ] 
+- [ ] this name already exists in the market place: "displayName": "Toggle Settings"
 
 ## Features
 
@@ -19,6 +19,22 @@ For example if there is an image subfolder under your extension project workspac
 \!\[feature X\]\(images/feature-x.png\)
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+
+## Installation
+
+Install through VS Code extensions. Search for `Toggle Settings`
+
+[Visual Studio Code Market Place: Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.vscode-toggle-settings)
+
+Can also be installed in VS Code: Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.
+
+```
+ext install mhagnumdw.vscode-toggle-settings
+```
+
+## Usage
+
+// TODO:
 
 ## Requirements
 
@@ -55,11 +71,6 @@ Fixed issue #.
 
 Added features X, Y, and Z.
 
----
+## Contributing
 
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+// TODO:
