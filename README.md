@@ -1,6 +1,4 @@
-# vscode-toggle-settings
-
-This is the README for your extension "vscode-toggle-settings". After writing up a brief description, we recommend including the following sections.
+# Toggle Settings for Visual Studio Code
 
 // TODO:
 - [ ] update README (WIP)
@@ -12,33 +10,21 @@ This is the README for your extension "vscode-toggle-settings". After writing up
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Allows you to quickly and easily toggle any VS Code setting directly from the status bar.
 
-For example if there is an image subfolder under your extension project workspace:
+You choose which settings to toggle, with each one represented by a dedicated status bar toggle (button).
 
-\!\[feature X\]\(images/feature-x.png\)
+// TODO: add gif below
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![demo](resource/demo.gif)
 
 ## Installation
 
-Install through VS Code extensions. Search for `Toggle Settings`
-
-[Visual Studio Code Market Place: Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.vscode-toggle-settings)
-
-Can also be installed in VS Code: Launch VS Code Quick Open (Ctrl+P), paste the following command, and press enter.
-
-```
-ext install mhagnumdw.vscode-toggle-settings
-```
+Install through VS Code extensions, searching for `Toggle Settings`. Or go to  [Visual Studio Code Market Place: Toggle Settings](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.vscode-toggle-settings).
 
 ## Usage
 
 // TODO:
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
 ## Extension Settings
 
@@ -50,10 +36,6 @@ This extension contributes the following settings:
 
 * `myExtension.enable`: Enable/disable this extension.
 * `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
 
 ## Release Notes
 
