@@ -67,8 +67,11 @@ suite('Extension Test Suite', () => {
     await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2, 'There should be two status bar items');
 
+    const showInformationMessageSpy = sinon.spy(vscode.window, 'showInformationMessage');
+
     await extension.disableExtension();
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 0, 'Settings should be empty after disabling');
+    sinon.assert.calledWith(showInformationMessageSpy, 'Extension vscode-toggle-settings is disabled.');
   });
 
   test('Enable extension', async () => {
@@ -77,11 +80,14 @@ suite('Extension Test Suite', () => {
     await extension.disableExtension();
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 0, 'Settings should be empty after disabling');
 
+    const showInformationMessageSpy = sinon.spy(vscode.window, 'showInformationMessage');
+
     await extension.enableExtension();
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2, 'There should be two status bar items after enabling');
+    sinon.assert.calledWith(showInformationMessageSpy, 'Extension vscode-toggle-settings is enabled.');
   });
 
-  test('cycleSetting error', async () => {
+  test('cycleSetting: error on update property value', async () => {
     await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
 
     const getConfigurationFake = { // is not possible to stub vscode.WorkspaceConfiguration.update
@@ -90,12 +96,11 @@ suite('Extension Test Suite', () => {
     };
     sinon.stub(vscode.workspace, 'getConfiguration').returns(getConfigurationFake as any);
     const showErrorMessageSpy = sinon.spy(vscode.window, 'showErrorMessage');
-    sinon.stub(extension, 'waitForConfigChange').callsFake(() => Promise.resolve());
+    // TODO: I couldn't mock the console.error with sinon, try again later
 
-    await extension.click('editor.renderWhitespace');
+    await extension.click('editor.renderWhitespace', false);
 
-    const msg = 'Failed to update setting editor.renderWhitespace: Error: Simulated error';
-    assert.ok(showErrorMessageSpy.calledWith(msg));
+    sinon.assert.calledWith(showErrorMessageSpy, 'Failed to update setting editor.renderWhitespace: Error: Simulated error');
   });
 
 });
@@ -128,10 +133,10 @@ class TestExtensionManager {
   }
 
   /** Simulate the user clicking the status bar item */
-  async click(property: string) {
+  async click(property: string, wait = true) {
     const commandId = ExtensionManager.getCommandId(property);
     await vscode.commands.executeCommand(commandId);
-    await this.waitForConfigChange(property);
+    wait && await waitForConfigChange(property);
   }
 
   /** Get the value of a property from the configuration */
@@ -156,16 +161,16 @@ class TestExtensionManager {
     return vscode.workspace.getConfiguration(EXTENSION_NAME);
   }
 
-  // Function to wait for a configuration change
-  waitForConfigChange(expectedKey: string): Promise<void> {
-    return new Promise((resolve) => {
-      const disposable = vscode.workspace.onDidChangeConfiguration(e => {
-        if (e.affectsConfiguration(expectedKey)) {
-          disposable.dispose();
-          resolve();
-        }
-      });
-    });
-  };
-
 }
+
+// Function to wait for a configuration change
+const waitForConfigChange = (expectedKey: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const disposable = vscode.workspace.onDidChangeConfiguration(e => {
+      if (e.affectsConfiguration(expectedKey)) {
+        disposable.dispose();
+        resolve();
+      }
+    });
+  });
+};
