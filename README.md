@@ -76,6 +76,7 @@ Initial release.
 - [ ] update README (WIP)
 - [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
   - [ ] rename to "easy-toggle-settings" ?! Good to me!
+  - [ ] rename repo to "vscode-easy-toggle-settings"
 - [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
 - [ ] Continuous Integration: https://code.visualstudio.com/api/working-with-extensions/continuous-integration
