@@ -22,7 +22,7 @@ suite('Extension Test Suite', () => {
   });
 
   test('Extension activation', () => {
-    const extension = vscode.extensions.getExtension('mhagnumdw.vscode-toggle-settings');
+    const extension = vscode.extensions.getExtension(`mhagnumdw.${EXTENSION_NAME}`);
     assert.ok(extension, 'Extension should be defined');
     assert.strictEqual(extension?.isActive, true, 'Extension should be active');
   });
@@ -71,7 +71,7 @@ suite('Extension Test Suite', () => {
 
     await extension.disableExtension();
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 0, 'Settings should be empty after disabling');
-    sinon.assert.calledWith(showInformationMessageSpy, 'Extension vscode-toggle-settings is disabled.');
+    sinon.assert.calledWith(showInformationMessageSpy, `Extension ${EXTENSION_NAME} is disabled.`);
   });
 
   test('Enable extension', async () => {
@@ -84,7 +84,7 @@ suite('Extension Test Suite', () => {
 
     await extension.enableExtension();
     assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2, 'There should be two status bar items after enabling');
-    sinon.assert.calledWith(showInformationMessageSpy, 'Extension vscode-toggle-settings is enabled.');
+    sinon.assert.calledWith(showInformationMessageSpy, `Extension ${EXTENSION_NAME} is enabled.`);
   });
 
   test('cycleSetting: error on update property value', async () => {
