@@ -1,9 +1,24 @@
 {
   "name": "vscode-toggle-settings",
-  "displayName": "vscode-toggle-settings",
+  "displayName": "Toggle Settings",
   "description": "Allows switching between VSCode settings via the status bar",
   "version": "0.0.1",
   "publisher": "mhagnumdw",
+  "license": "MIT",
+  "icon": "resources/icon.png",
+  "galleryBanner": {
+    "color": "#0057A2",
+    "theme": "light"
+  },
+  "homepage": "https://github.com/mhagnumdw/vscode-setting-toggle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhagnumdw/vscode-setting-toggle"
+  },
+  "bugs": {
+    "url": "https://github.com/mhagnumdw/vscode-setting-toggle/issues"
+  },
+  "pricing": "Free",
   "engines": {
     "vscode": "^1.99.0"
   },
