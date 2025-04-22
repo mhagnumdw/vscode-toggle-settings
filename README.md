@@ -1,4 +1,4 @@
-# Toggle Settings for Visual Studio Code
+# Easy Toggle Settings for Visual Studio Code
 
 ## Features
 
@@ -12,7 +12,7 @@ Perfect for settings you frequently toggle.
 
 ## Installation
 
-Install through VS Code extensions, searching for `Toggle Settings`. Or go to  [Visual Studio Code Market Place: Toggle Settings](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.vscode-toggle-settings).
+Install through VS Code extensions, searching for `Easy Toggle Settings`. Or go to  [Visual Studio Code Market Place: Easy Toggle Settings](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.easy-toggle-settings).
 
 ## Usage
 
@@ -24,7 +24,7 @@ For example, let's say we want to toggle these settings:
 Open global settings (`Ctrl Shift P > Open user settings json`) and add at the end:
 
 ```json
-"vscode-toggle-settings.items": [
+"easy-toggle-settings.items": [
   {
     "property": "editor.codeLens",
     "icon": "eye",
@@ -50,10 +50,10 @@ After saving the settings, the icons will appear in the status bar. Each click w
 
 This extension contributes the following settings:
 
-- `vscode-toggle-settings.enabled` (`boolean`, default: `true`)  
+- `easy-toggle-settings.enabled` (`boolean`, default: `true`)  
   Enables or disables the extension functionality.
 
-- `vscode-toggle-settings.items` (`array`, default: `[]`)  
+- `easy-toggle-settings.items` (`array`, default: `[]`)  
   List of settings to toggle. Each item must include:
   - `property` (`string`): Full name of any vscode setting (e.g., `editor.codeLens`)
   - `icon` (`string`): [Codicon](https://code.visualstudio.com/api/references/icons-in-labels#icon-listing) icon name (e.g., `eye`, `whitespace`)
@@ -61,22 +61,17 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 1.0.0
-
-Initial release.
+See [CHANGELOG](CHANGELOG.md).
 
 ## Contributing
 
 1. Fork → Branch → Commit → Push → Open PR
-2. Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-toggle-settings/issues)
+2. Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-easy-toggle-settings/issues)
 
 ---
 
 // TODO:
 - [ ] update README (WIP)
-- [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
-  - [ ] rename to "easy-toggle-settings" ?! Good to me!
-  - [ ] rename repo to "vscode-easy-toggle-settings"
 - [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
 - [ ] Continuous Integration: https://code.visualstudio.com/api/working-with-extensions/continuous-integration
