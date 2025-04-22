@@ -91,3 +91,4 @@ Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-toggle-settings
 - [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
 - [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
+- [ ] Continuous Integration: https://code.visualstudio.com/api/working-with-extensions/continuous-integration
