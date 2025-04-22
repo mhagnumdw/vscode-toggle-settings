@@ -1,6 +1,6 @@
 {
-  "name": "vscode-toggle-settings",
-  "displayName": "Toggle Settings",
+  "name": "easy-toggle-settings",
+  "displayName": "Easy Toggle Settings",
   "description": "Allows switching between VSCode settings via the status bar",
   "version": "0.0.1",
   "publisher": "mhagnumdw",
@@ -32,14 +32,14 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Toggle Settings",
+      "title": "Easy Toggle Settings",
       "properties": {
-        "vscode-toggle-settings.enabled": {
+        "easy-toggle-settings.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enabled/Disable the extension"
         },
-        "vscode-toggle-settings.items": {
+        "easy-toggle-settings.items": {
           "type": "array",
           "description": "List of VSCode settings to be toggled with their icons and values",
           "default": [],

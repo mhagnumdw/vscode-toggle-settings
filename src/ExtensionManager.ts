@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 
 /**
- * According to the `contributes.configuration.properties["vscode-toggle-settings.` in package.json
+ * According to the `contributes.configuration.properties["easy-toggle-settings.` in package.json
  */
-export const EXTENSION_NAME = 'vscode-toggle-settings';
+export const EXTENSION_NAME = 'easy-toggle-settings';
 
 const ENABLED_PROPERTY = `${EXTENSION_NAME}.enabled`;
 const ITEMS_PROPERTY = `${EXTENSION_NAME}.items`;
