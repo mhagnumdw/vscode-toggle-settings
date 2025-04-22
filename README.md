@@ -8,8 +8,6 @@ You choose which settings to toggle. A button is added to the status bar for eac
 
 Perfect for settings you frequently toggle.
 
-// TODO: add gif below
-
 ![demo](resources/demo.gif)
 
 ## Installation
@@ -63,32 +61,20 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
+Initial release.
 
 ## Contributing
 
-1. **Fork** the repository
-2. Create a **branch** for your feature/fix (`git checkout -b feat/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feat/amazing-feature`)
-5. Open a **Pull Request**
-
-Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-toggle-settings/issues).
+1. Fork → Branch → Commit → Push → Open PR
+2. Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-toggle-settings/issues)
 
 ---
 
 // TODO:
 - [ ] update README (WIP)
-- [ ] set minimal version to engines.vscode and test it
+- [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
 - [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
-- [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
 - [ ] Continuous Integration: https://code.visualstudio.com/api/working-with-extensions/continuous-integration
