@@ -75,14 +75,19 @@ Fixed issue #.
 
 ## Contributing
 
-// TODO:
+1. **Fork** the repository
+2. Create a **branch** for your feature/fix (`git checkout -b feat/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feat/amazing-feature`)
+5. Open a **Pull Request**
+
+Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-toggle-settings/issues).
 
 ---
 
 // TODO:
 - [ ] update README (WIP)
 - [ ] set minimal version to engines.vscode and test it
-- [ ] add "license" in package.json
 - [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
 - [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
 - [ ] check: this name already exists in the market place: "displayName": "Toggle Settings"
