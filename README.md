@@ -8,7 +8,7 @@ You choose which settings to toggle. A button is added to the status bar for eac
 
 Perfect for settings you frequently toggle.
 
-![demo](resources/demo.gif)
+![demo](resources/docs/demo.gif)
 
 ## Installation
 
@@ -42,7 +42,7 @@ Open global settings (`Ctrl Shift P > Open user settings json`) and add at the e
 
 After saving the settings, the icons will appear in the status bar. Each click will toggle the setting between the declared values.
 
-![toolbar](resources/toolbar.png)
+![toolbar](resources/docs/toolbar.png)
 
 🎉 You can now do this for any VS Code setting! 🥳
 
@@ -67,11 +67,3 @@ See [CHANGELOG](CHANGELOG.md).
 
 1. Fork → Branch → Commit → Push → Open PR
 2. Found a bug? [Open an Issue](https://github.com/mhagnumdw/vscode-easy-toggle-settings/issues)
-
----
-
-// TODO:
-- [ ] update README (WIP)
-- [ ] add badges: https://code.visualstudio.com/api/references/extension-manifest#approved-badges
-- [ ] review .vscodeignore with `vsce ls`: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#using-.vscodeignore
-- [ ] Continuous Integration: https://code.visualstudio.com/api/working-with-extensions/continuous-integration
