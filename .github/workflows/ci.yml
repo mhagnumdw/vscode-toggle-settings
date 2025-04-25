@@ -1,6 +1,4 @@
 on:
-  push:
-    branches: ["**"]
   pull_request:
     branches:
       - main
@@ -10,7 +8,6 @@ on:
 
 jobs:
   build:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -30,7 +27,6 @@ jobs:
 
     - name: Package
       run: |
-        echo teste001
         npx vsce ls --tree
         npx vsce package --allow-star-activation
 
