@@ -27,16 +27,12 @@ jobs:
 
     - run: npm install
 
-    # - run: xvfb-run -a npm test
     - run: xvfb-run -a npm run test:coverage
-
-    # - run: npm run test:coverage
-    # - run: npm test
 
     - name: Package
       run: |
-        vsce ls --tree
-        vsce package --allow-star-activation
+        npx vsce ls --tree
+        npx vsce package --allow-star-activation
 
     - uses: actions/upload-artifact@v4
       with:
