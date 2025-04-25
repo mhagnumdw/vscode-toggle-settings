@@ -75,8 +75,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "test:coverage": "npm run test -- --coverage",
-    "deploy": "vsce publish"
+    "test:coverage": "npm run test -- --coverage"
   },
   "devDependencies": {
     "@types/vscode": "^1.99.0",

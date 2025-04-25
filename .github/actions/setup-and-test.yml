@@ -1,0 +1,33 @@
+name: 'Setup and Test'
+description: 'Shared setup and testing steps'
+
+runs:
+  using: composite
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Install Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version-file: .tool-versions
+
+  - name: Install dependencies
+    run: npm install
+    shell: bash
+
+  - name: Run tests
+    run: xvfb-run -a npm run test:coverage
+    shell: bash
+
+  - name: Package
+    shell: bash
+    run: |
+      npx vsce ls --tree
+      npx vsce package --allow-star-activation
+
+  - uses: actions/upload-artifact@v4
+    with:
+      name: easy-toggle-settings-artifacts
+      path: easy-toggle-settings-*.vsix
+      if-no-files-found: error
