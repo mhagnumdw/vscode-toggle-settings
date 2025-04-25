@@ -1,3 +1,5 @@
+name: ci
+
 on:
   push:
     branches:
@@ -5,42 +7,12 @@ on:
   pull_request:
     branches:
       - main
-  release:
-    types:
-      - created
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Install Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version-file: .tool-versions
-
-    - run: npm install
-
-    - run: xvfb-run -a npm run test:coverage
-
-    - name: Package
-      run: |
-        npx vsce ls --tree
-        npx vsce package --allow-star-activation
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: easy-toggle-settings-artifacts
-        path: easy-toggle-settings-*.vsix
-        if-no-files-found: error
-
-    - name: Publish
-      if: success() && startsWith(github.ref, 'refs/tags/')
-      run: npm run deploy
-      env:
-        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    - name: Setup, Test and Package
+      uses: ./.github/actions/common-tasks

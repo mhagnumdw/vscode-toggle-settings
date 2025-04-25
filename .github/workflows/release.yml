@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Semantic version (X.Y.Z)'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version format
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format. Use X.Y.Z"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Setup, Test and Package
+        uses: ./.github/actions/common-tasks
+
+      - name: Publish to Marketplace
+        run: npx vsce publish ${{ inputs.version }}
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Push git changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
+          # branch: main
+          branch: ${{ github.ref }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ inputs.version }}"
+          name: "v${{ inputs.version }}"
+          body: "Release notes" # // TODO: make an input?
+          draft: false
+          prerelease: false
