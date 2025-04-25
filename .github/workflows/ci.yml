@@ -36,11 +36,11 @@ jobs:
         vsce ls --tree
         vsce package --allow-star-activation
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: easy-toggle-settings-artifacts
         path: easy-toggle-settings-*.vsix
+        if-no-files-found: error
 
     - name: Publish
       if: success() && startsWith(github.ref, 'refs/tags/')
