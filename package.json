@@ -7,7 +7,7 @@
   "license": "MIT",
   "icon": "resources/icon.png",
   "galleryBanner": {
-    "color": "#0057A2",
+    "color": "#D8EBFF",
     "theme": "light"
   },
   "homepage": "https://github.com/mhagnumdw/vscode-setting-toggle",

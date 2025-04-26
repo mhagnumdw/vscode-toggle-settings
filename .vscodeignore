@@ -12,4 +12,5 @@ vsc-extension-quickstart.md
 coverage
 out/test
 .tool-versions
-resources/docs
+resources/**
+!resources/icon.png
