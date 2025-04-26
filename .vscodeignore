@@ -14,3 +14,4 @@ out/test
 .tool-versions
 resources/**
 !resources/icon.png
+.github
