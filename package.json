@@ -20,7 +20,7 @@
   },
   "pricing": "Free",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
@@ -82,7 +82,7 @@
     "test:coverage": "npm run test -- --coverage"
   },
   "devDependencies": {
-    "@types/vscode": "^1.99.0",
+    "@types/vscode": "^1.80.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
