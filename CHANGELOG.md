@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 1.1.0
 
-- vscode engine version from from ^1.99.0 to ^1.80.0 (PR #15)
+- change vscode engine version from ^1.99.0 to ^1.80.0 (PR #15)
 
 ## 1.0.0
 
