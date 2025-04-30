@@ -2,7 +2,7 @@
   "name": "easy-toggle-settings",
   "displayName": "Easy Toggle Settings",
   "description": "Allows switching between VSCode settings via the status bar",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "mhagnumdw",
   "license": "MIT",
   "icon": "resources/icon.png",
