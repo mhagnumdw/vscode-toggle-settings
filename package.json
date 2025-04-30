@@ -20,7 +20,7 @@
   },
   "pricing": "Free",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
