@@ -31,7 +31,16 @@ export class ExtensionManager {
 
   private context: vscode.ExtensionContext;
   private enabled: boolean;
-  private statusBarItems: Map<string, DisposableLike[]> = new Map();
+
+  /**
+   * Items displayed in the status bar.
+   *
+   * @remarks
+   * - The map key is the command ID
+   * - The value contains ToggleSetting and disposables associated with each status bar item
+   */
+  private statusBarItems: Map<string, {item: ToggleSetting, disposables: DisposableLike[] }> = new Map();
+
   private itemsChangeSubscription?: vscode.Disposable;
 
   private constructor(context: vscode.ExtensionContext) {
@@ -95,12 +104,24 @@ export class ExtensionManager {
     return vscode.workspace.getConfiguration().get(ENABLED_PROPERTY, true);
   }
 
-  private createAllStatusBarItems() {
+  private createAllStatusBarItems(): void {
     this.removeAllStatusBarItems();
-    this.getAllToggles().forEach(toggleSetting => {
-      const item = this.createStatusBarItem(toggleSetting);
-      this.updateStatusBarItem(toggleSetting, item);
+
+    const duplicateProperties: string[] = [];
+
+    this.getAllToggles().forEach(toggle => {
+      if (!this.exists(toggle.property)) {
+        const item = this.createStatusBarItem(toggle);
+        this.updateStatusBarItem(toggle, item);
+      } else {
+        duplicateProperties.push(toggle.property);
+      }
     });
+
+    if (duplicateProperties.length > 0) {
+      const msg = duplicateProperties.join('; ');
+      vscode.window.showWarningMessage(`The following properties are duplicated: ${msg}. Only the first occurrence of each will be considered.`);
+    }
   }
 
   private removeAllStatusBarItems() {
@@ -110,7 +131,7 @@ export class ExtensionManager {
   }
 
   private removeStatusBarItem(commandId: string) {
-    const disposables = this.statusBarItems.get(commandId);
+    const disposables = this.statusBarItems.get(commandId)?.disposables;
     if (disposables) {
       disposables.forEach(d => d.dispose());
       this.statusBarItems.delete(commandId);
@@ -129,7 +150,7 @@ export class ExtensionManager {
       .registerCommand(statusBarItem.command, () => this.cycleSetting(setting, statusBarItem));
     this.context.subscriptions.push(command);
 
-    this.statusBarItems.set(statusBarItem.command, [ statusBarItem, command ]);
+    this.statusBarItems.set(statusBarItem.command, {item: setting, disposables: [ statusBarItem, command ]});
     return statusBarItem;
   }
 
@@ -168,6 +189,15 @@ export class ExtensionManager {
 
   get totalStatusBarItems(): number {
     return this.statusBarItems.size;
+  }
+
+  get allStatusBarItems(): ToggleSetting[] {
+    return Array.from(this.statusBarItems.values()).map(i => i.item);
+  }
+
+  private exists(property: string): boolean {
+    const commandId = ExtensionManager.getCommandId(property);
+    return this.statusBarItems.has(commandId);
   }
 
 }
