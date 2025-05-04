@@ -46,6 +46,6 @@ jobs:
         with:
           tag_name: "v${{ inputs.version }}"
           name: "v${{ inputs.version }}"
-          body: "Release notes" # // TODO: make an input?
+          body: "See [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)"
           draft: false
           prerelease: false
