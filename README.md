@@ -1,6 +1,7 @@
 # Easy Toggle Settings for Visual Studio Code
 
 [![ci](https://github.com/mhagnumdw/vscode-easy-toggle-settings/actions/workflows/ci.yml/badge.svg)](https://github.com/mhagnumdw/vscode-easy-toggle-settings/actions/workflows/ci.yml)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/mhagnumdw.easy-toggle-settings)](https://marketplace.visualstudio.com/items?itemName=mhagnumdw.easy-toggle-settings)
 
 ## Features
 
