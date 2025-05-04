@@ -1,6 +1,11 @@
 name: 'Setup, Test and Package'
 description: 'Shared setup, test and package steps'
 
+inputs:
+  codecov_token:
+    description: Codeconv token used for uploading coverage reports
+    required: true
+
 runs:
   using: composite
   steps:
@@ -26,9 +31,10 @@ runs:
       files: ./coverage/lcov.info
       flags: unittests # optional
       # token: ${{ secrets.CODECOV_TOKEN }}
+      token: ${{ inputs.codecov_token }}
       verbose: true # optional (default = false)
-    env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    # env:
+    #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   - name: Package
     shell: bash
