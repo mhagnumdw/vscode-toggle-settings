@@ -17,20 +17,20 @@ runs:
     run: xvfb-run -a npm run test:coverage
     shell: bash
 
-  - name: ls-la antes
-    shell: bash
-    run: |
-      ls -la
-
   - name: Update Coverage Badge
     # if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     # if: github.ref_name == github.event.repository.default_branch
-    uses: we-cli/coverage-badge-action@main
+    uses: codecov/codecov-action@v5
+    with:
+      fail_ci_if_error: true # optional (default = false)
+      files: ./coverage/lcov.info
+      flags: unittests # optional
+      token: ${{ secrets.CODECOV_TOKEN }}
+      verbose: true # optional (default = false)
 
   - name: Package
     shell: bash
     run: |
-      ls -la
       npx vsce ls --tree
       npx vsce package --allow-star-activation
 
