@@ -4,7 +4,7 @@ All notable changes to the "easy-toggle-settings" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## 1.2.0
 
 - Show a WARN message if there is a duplicate property (PR #20)
 
