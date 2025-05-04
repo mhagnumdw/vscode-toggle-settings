@@ -79,7 +79,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
-    "test:coverage": "npm run test -- --coverage"
+    "test:coverage": "npm run test -- --coverage --coverage-reporter html --coverage-reporter json-summary --coverage-reporter text --coverage-reporter text-summary --coverage-reporter lcov"
   },
   "devDependencies": {
     "@types/vscode": "^1.80.0",

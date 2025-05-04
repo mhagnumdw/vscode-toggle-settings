@@ -1,6 +1,11 @@
 name: 'Setup, Test and Package'
 description: 'Shared setup, test and package steps'
 
+inputs:
+  codecov_token:
+    description: Codecov token used for uploading coverage reports
+    required: true
+
 runs:
   using: composite
   steps:
@@ -16,6 +21,15 @@ runs:
   - name: Run tests
     run: xvfb-run -a npm run test:coverage
     shell: bash
+
+  - name: Codecov Code Coverage
+    uses: codecov/codecov-action@v5
+    with:
+      fail_ci_if_error: true # optional (default = false)
+      files: ./coverage/lcov.info
+      flags: unittests # optional
+      token: ${{ inputs.codecov_token }}
+      verbose: false
 
   - name: Package
     shell: bash

@@ -16,3 +16,6 @@ jobs:
 
     - name: Setup, Test and Package
       uses: ./.github/actions/common-tasks
+      with:
+        codecov_token: ${{ secrets.CODECOV_TOKEN }}
+
