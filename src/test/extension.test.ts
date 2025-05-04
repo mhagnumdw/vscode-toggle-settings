@@ -19,6 +19,8 @@ suite('Extension Test Suite', () => {
   teardown(() => {
     // https://sinonjs.org/releases/latest/sandbox/#default-sandbox
     sinon.restore(); // cleanup, restore any mock, spy etc
+    sinon.resetHistory();
+    sinon.reset();
   });
 
   test('Extension activation', () => {
@@ -60,6 +62,36 @@ suite('Extension Test Suite', () => {
     items = extension.getAllTogglesFromConf();
     assert.strictEqual(items.length, 1, 'There should be one setting left');
     assert.strictEqual(items[0].property, 'editor.cursorStyle', 'Remaining setting should match');
+  });
+
+  test('Add duplicate toggle', async () => {
+    const showWarningMessageSpy = sinon.spy(vscode.window, 'showWarningMessage');
+
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["fake1", "fake2"]);
+
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 1);
+
+    const toggle = ExtensionManager.getInstance().allStatusBarItems[0];
+    assert.strictEqual(toggle.property, 'editor.renderWhitespace');
+    assert.strictEqual(toggle.values.length, 2);
+    assert.strictEqual(toggle.values[0], 'none');
+    assert.strictEqual(toggle.values[1], 'all');
+
+    sinon.assert.calledWith(showWarningMessageSpy, 'The following properties are duplicated: editor.renderWhitespace. Only the first occurrence of each will be considered.');
+  });
+
+  test('Add two duplicates toggles', async () => {
+    const showWarningMessageSpy = sinon.spy(vscode.window, 'showWarningMessage');
+
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["none", "all"]);
+    await extension.addToggle('editor.renderWhitespace', 'whitespace', ["fake1", "fake2"]);
+
+    await extension.addToggle('editor.cursorStyle', 'cursor', ["line", "block"]);
+    await extension.addToggle('editor.cursorStyle', 'cursor', ["fake3", "fake4"]);
+
+    assert.strictEqual(ExtensionManager.getInstance().totalStatusBarItems, 2);
+    sinon.assert.calledWith(showWarningMessageSpy, 'The following properties are duplicated: editor.renderWhitespace; editor.cursorStyle. Only the first occurrence of each will be considered.');
   });
 
   test('Disable extension', async () => {
