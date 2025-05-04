@@ -3,7 +3,7 @@ description: 'Shared setup, test and package steps'
 
 inputs:
   codecov_token:
-    description: Codeconv token used for uploading coverage reports
+    description: Codecov token used for uploading coverage reports
     required: true
 
 runs:
