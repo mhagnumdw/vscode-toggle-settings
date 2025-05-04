@@ -22,6 +22,8 @@ jobs:
 
       - name: Setup, Test and Package
         uses: ./.github/actions/common-tasks
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Setup git user.name and user.email
         run: |

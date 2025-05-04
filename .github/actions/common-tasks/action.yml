@@ -30,11 +30,8 @@ runs:
       fail_ci_if_error: true # optional (default = false)
       files: ./coverage/lcov.info
       flags: unittests # optional
-      # token: ${{ secrets.CODECOV_TOKEN }}
       token: ${{ inputs.codecov_token }}
-      verbose: true # optional (default = false)
-    # env:
-    #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      verbose: false
 
   - name: Package
     shell: bash
