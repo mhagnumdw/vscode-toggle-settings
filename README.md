@@ -1,5 +1,7 @@
 # Easy Toggle Settings for Visual Studio Code
 
+[![ci](https://github.com/mhagnumdw/vscode-easy-toggle-settings/actions/workflows/ci.yml/badge.svg)](https://github.com/mhagnumdw/vscode-easy-toggle-settings/actions/workflows/ci.yml)
+
 ## Features
 
 Allows you to quickly and easily toggle any VS Code setting directly from the status bar.
