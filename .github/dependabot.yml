@@ -10,6 +10,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "@types/vscode"
+        versions: [">=1.80.0"]
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
