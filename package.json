@@ -93,6 +93,6 @@
     "@vscode/test-electron": "^2.4.1",
     "@types/sinon": "^17.0.4",
     "sinon": "^20.0.0",
-    "@vscode/vsce": "^3.3.2"
+    "@vscode/vsce": "^3.4.1"
   }
 }
