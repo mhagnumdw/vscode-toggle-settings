@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,4 +21,3 @@ jobs:
       uses: ./.github/actions/common-tasks
       with:
         codecov_token: ${{ secrets.CODECOV_TOKEN }}
-
